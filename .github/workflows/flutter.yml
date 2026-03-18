@@ -29,6 +29,28 @@ jobs:
 
 
 
+  android-arm64:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - run: flutter doctor
+      - run: flutter pub get
+
+      - run: flutter build apk --release --target-platform android-arm64
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: android-arm64-apk
+          path: build/app/outputs/flutter-apk/*.apk
+
+
+
   web:
     runs-on: ubuntu-latest
 
@@ -48,6 +70,30 @@ jobs:
         with:
           name: web-build
           path: build/web
+
+
+
+  linux-x64:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - run: flutter doctor
+
+      - run: flutter config --enable-linux-desktop
+      - run: flutter pub get
+
+      - run: flutter build linux --release
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: linux-x64-build
+          path: build/linux/x64/release/bundle
 
 
 
@@ -73,16 +119,16 @@ jobs:
           name: windows-build
           path: build/windows/x64/runner/Release
 
-
 # name: Flutter Build
 
 # on:
 #   push:
 #     branches: [ main ]
 
+
 # jobs:
 
-#   linux-android-web:
+#   android-arm32:
 #     runs-on: ubuntu-latest
 
 #     steps:
@@ -93,22 +139,37 @@ jobs:
 #           channel: stable
 
 #       - run: flutter doctor
-
 #       - run: flutter pub get
 
-#       # WEB
-#       - run: flutter build web --release
-
-#       # ANDROID (ARM32 + ARM64)
 #       - run: flutter build apk --release --target-platform android-arm
-#       # ,android-arm64
 
 #       - uses: actions/upload-artifact@v4
 #         with:
-#           name: android-web-build
-#           path: |
-#             build/web
-#             build/app/outputs/flutter-apk/*.apk
+#           name: android-arm32-apk
+#           path: build/app/outputs/flutter-apk/*.apk
+
+
+
+#   web:
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       - uses: actions/checkout@v4
+
+#       - uses: subosito/flutter-action@v2
+#         with:
+#           channel: stable
+
+#       - run: flutter doctor
+#       - run: flutter pub get
+
+#       - run: flutter build web --release
+
+#       - uses: actions/upload-artifact@v4
+#         with:
+#           name: web-build
+#           path: build/web
+
 
 
 #   windows:
@@ -124,7 +185,6 @@ jobs:
 #       - run: flutter doctor
 
 #       - run: flutter config --enable-windows-desktop
-
 #       - run: flutter pub get
 
 #       - run: flutter build windows --release
