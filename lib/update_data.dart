@@ -25,6 +25,7 @@ class updateScreenState extends State<updateScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(),
       body: Container(
         child: Stack(
           children: [
@@ -67,6 +68,7 @@ class updateScreenState extends State<updateScreen> {
                                     _personFuture = Api.getPerson();
                                   });
                                 });
+                                
                             },
                              icon: Icon(Icons.edit) 
                              ),

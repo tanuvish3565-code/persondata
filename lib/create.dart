@@ -17,6 +17,7 @@ class createScreenState extends State<createScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(),
       body: Container(
         child: Stack(
           children: [
@@ -103,6 +104,8 @@ class createScreenState extends State<createScreen> {
                     };
                     
                     Api.addPerson(data);
+
+                    Navigator.pop(context);
 
                   },
                    child: Text("Submit"))

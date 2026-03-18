@@ -23,6 +23,7 @@ class displayScreenState extends State<displayScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(),
       body: Container(
         child: Stack(
           children: [

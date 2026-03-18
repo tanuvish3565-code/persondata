@@ -30,6 +30,7 @@ class editScreenState extends State<editScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(),
       body: Container(
         child: Stack(
           children: [
@@ -114,6 +115,10 @@ class editScreenState extends State<editScreen> {
                       'pAge':AgeController.text,
                       'id':widget.data.id
                     });
+                    Api.getPerson();
+                    if (context.mounted) {
+      Navigator.pop(context);  // pop AFTER update finishes
+    }
                   },
                    child: Text("UPDATE"))
                 ],

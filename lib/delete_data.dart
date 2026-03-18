@@ -25,6 +25,7 @@ class deleteScreenState extends State<deleteScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(),
       body: Container(
         child: Stack(
           children: [
