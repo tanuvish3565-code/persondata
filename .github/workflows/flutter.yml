@@ -74,26 +74,37 @@ jobs:
 
 
   linux-x64:
-    runs-on: ubuntu-latest
+  runs-on: ubuntu-latest
 
-    steps:
-      - uses: actions/checkout@v4
+  steps:
+    - uses: actions/checkout@v4
 
-      - uses: subosito/flutter-action@v2
-        with:
-          channel: stable
+    - uses: subosito/flutter-action@v2
+      with:
+        channel: stable
 
-      - run: flutter doctor
+    - name: Install Linux deps
+      run: |
+        sudo apt update
+        sudo apt install -y \
+          clang \
+          cmake \
+          ninja-build \
+          pkg-config \
+          libgtk-3-dev \
+          liblzma-dev
 
-      - run: flutter config --enable-linux-desktop
-      - run: flutter pub get
+    - run: flutter doctor
 
-      - run: flutter build linux --release
+    - run: flutter config --enable-linux-desktop
+    - run: flutter pub get
 
-      - uses: actions/upload-artifact@v4
-        with:
-          name: linux-x64-build
-          path: build/linux/x64/release/bundle
+    - run: flutter build linux --release
+
+    - uses: actions/upload-artifact@v4
+      with:
+        name: linux-x64-build
+        path: build/linux/x64/release/bundle
 
 
 
