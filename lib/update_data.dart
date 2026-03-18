@@ -11,13 +11,11 @@ class updateScreen extends StatefulWidget {
 }
 
 class updateScreenState extends State<updateScreen> {
-  int _refreshKey = 0;
   late Future _personFuture;
 
   @override
   void initState() {
     super.initState();
-    _refreshKey++;
     _personFuture = Api.getPerson(); // step 2 - fetch once on screen load
   }
 
@@ -36,9 +34,7 @@ class updateScreenState extends State<updateScreen> {
               ),
             ),
             Container(
-              child: KeyedSubtree(
-                key: ValueKey(_refreshKey),
-                child: FutureBuilder(
+              child: FutureBuilder(
                   future: _personFuture,
                   builder: (BuildContext context, AsyncSnapshot snapshot) {
                 
@@ -114,7 +110,6 @@ class updateScreenState extends State<updateScreen> {
                     );
                   },
                 ),
-              ),
             ),
           ],
         ),
