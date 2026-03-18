@@ -2,179 +2,58 @@ name: Flutter Build
 
 on:
   push:
-    branches: [ main, master ]
-  pull_request:
-    branches: [ main, master ]
-  workflow_dispatch:  # manual trigger from GitHub Actions tab
+    branches: [ main ]
 
 jobs:
 
-  # ── ANDROID ARM32 ──────────────────────────────────────────────────────────
-  build-android:
-    name: Android ARM32
+  linux-android-web:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Java
-        uses: actions/setup-java@v4
+      - uses: subosito/flutter-action@v2
         with:
-          java-version: '17'
-          distribution: 'temurin'
+          channel: stable
 
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
+      - run: flutter doctor
+
+      - run: flutter pub get
+
+      # WEB
+      - run: flutter build web --release
+
+      # ANDROID (ARM32 + ARM64)
+      - run: flutter build apk --release --target-platform android-arm
+      # ,android-arm64
+
+      - uses: actions/upload-artifact@v4
         with:
-          flutter-version: '3.14.4'
-          channel: 'stable'
+          name: android-web-build
+          path: |
+            build/web
+            build/app/outputs/flutter-apk/*.apk
 
-      - name: Get dependencies
-        run: flutter pub get
 
-      - name: Build APK (ARM32 only)
-        run: flutter build apk --target-platform android-arm --split-per-abi
-
-      - name: Upload ARM32 APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: android-arm32-apk
-          path: build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk
-
-  # ── WINDOWS x64 ────────────────────────────────────────────────────────────
-  build-windows:
-    name: Windows x64
+  windows:
     runs-on: windows-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
+      - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.14.4'
-          channel: 'stable'
+          channel: stable
 
-      - name: Enable Windows desktop
-        run: flutter config --enable-windows-desktop
+      - run: flutter doctor
 
-      - name: Get dependencies
-        run: flutter pub get
+      - run: flutter config --enable-windows-desktop
 
-      - name: Build Windows x64
-        run: flutter build windows --release
+      - run: flutter pub get
 
-      - name: Zip Windows build
-        run: Compress-Archive -Path build\windows\x64\runner\Release\* -DestinationPath windows-x64.zip
-        shell: pwsh
+      - run: flutter build windows --release
 
-      - name: Upload Windows build
-        uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4
         with:
-          name: windows-x64-build
-          path: windows-x64.zip
-
-  # ── WEB ────────────────────────────────────────────────────────────────────
-  build-web:
-    name: Web
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.14.4'
-          channel: 'stable'
-
-      - name: Enable web
-        run: flutter config --enable-web
-
-      - name: Get dependencies
-        run: flutter pub get
-
-      - name: Build Web
-        run: flutter build web --release
-
-      - name: Upload Web build
-        uses: actions/upload-artifact@v4
-        with:
-          name: web-build
-          path: build/web/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# name: Flutter Build
-
-# on:
-#   push:
-#     branches: [ main ]
-
-# jobs:
-
-#   linux-android-web:
-#     runs-on: ubuntu-latest
-
-#     steps:
-#       - uses: actions/checkout@v4
-
-#       - uses: subosito/flutter-action@v2
-#         with:
-#           channel: stable
-
-#       - run: flutter doctor
-
-#       - run: flutter pub get
-
-#       # WEB
-#       - run: flutter build web --release
-
-#       # ANDROID (ARM32 + ARM64)
-#       - run: flutter build apk --release --target-platform android-arm,android-arm64
-
-#       - uses: actions/upload-artifact@v4
-#         with:
-#           name: android-web-build
-#           path: |
-#             build/web
-#             build/app/outputs/flutter-apk/*.apk
-
-
-#   windows:
-#     runs-on: windows-latest
-
-#     steps:
-#       - uses: actions/checkout@v4
-
-#       - uses: subosito/flutter-action@v2
-#         with:
-#           channel: stable
-
-#       - run: flutter doctor
-
-#       - run: flutter config --enable-windows-desktop
-
-#       - run: flutter pub get
-
-#       - run: flutter build windows --release
-
-#       - uses: actions/upload-artifact@v4
-#         with:
-#           name: windows-build
-#           path: build/windows/x64/runner/Release
+          name: windows-build
+          path: build/windows/x64/runner/Release
